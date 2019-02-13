@@ -1,4 +1,4 @@
-!/usr/bin/env python3
+#!/usr/bin/env python3
 import asyncio
 import datetime
 import time
@@ -8,6 +8,7 @@ import sys
 import os
 import traceback
 from discord.ext import commands
+from pathlib import Path
 
 
 if not os.path.exists('config'):
@@ -30,7 +31,7 @@ def prefix_callable(bot, msg):
     return prefixes
 
 # Preparing the bot
-bot = commands.AutoShardedBot(command_prefix=prefix_callable,
+bot = commands.AutoShardedBot(command_prefix=prefix_callable, case_insensitive=True, owner_id=189878809997213706,
                    description='The silent coast guard of Discord servers.')
 
 
@@ -41,14 +42,11 @@ async def on_guild_join(guild: discord.Guild):
 
 @bot.event
 async def on_ready():
-    if not bot.startup_done:
-        print(f'\n\nLogged in as: {bot.user.name} - {bot.user.id}' + f'\nVersion: {discord.__version__}\n')
-        await BugLog.onReady(bot, config["Settings"]["botlog"])
-        bot.startup_done = True
+    print(f'\n\nLogged in as: {bot.user.name} - {bot.user.id}' + f'\nVersion: {discord.__version__}\n')
     await bot.change_presence(activity=discord.Activity(name='The Coastline.', type=discord.ActivityType.watching))
 
 
-    @bot.event
+@bot.event
 async def on_message(message:discord.Message):
     if message.author.bot:
         return
@@ -64,32 +62,40 @@ async def on_message(message:discord.Message):
 
 
 @commands.command(name='hello', aliases=['henlo', 'hey', 'hi'])
-    async def hello(self, ctx: commands.Context, fren: discord.Member):
-        """Checks the bot is running"""
-        if fren is None:
-            await ctx.send(f"Hey {ctx.author.mention} fren!")
-        if fren = ctx.bot.user:
-            await ctx.send("Hey there fren! I'm working for you.")
-        if != ctx.author:
-            await ctx.send(f"{fren.mention}: hey there fren! :) {ctx.author.mention}")
+async def hello(self, ctx: commands.Context, fren: discord.Member):
+    """Checks the bot is running"""
+    if fren is None:
+        await ctx.send(f"Hey {ctx.author.mention} fren!")
+    if fren == ctx.bot.user:
+        await ctx.send("Hey there fren! I'm working for you.")
+    if fren != ctx.author:
+        await ctx.send(f"{fren.mention}: hey there fren! :) {ctx.author.mention}")
 
 
 @commands.command()
-    async def ping(self, ctx):
-        """Returns the amount of latency from the host to the Discord WS/REST API"""
-        embed = discord.Embed(timestamp=ctx.message.created_at, color=0x666666)
-        embed.add_field(name="Pong Recieved!", value="Calculating...")
-        resp = await ctx.send(embed=embed)
-        embed = discord.Embed(timestamp=ctx.message.created_at, color=0x666666)
-        diff = resp.created_at - ctx.message.created_at
-        embed.add_field(name="Ping", value=f'**{1000*diff.total_seconds():.1f}** ms')
-        embed.add_field(name='WS', value=f'**{round(self.bot.latency*1000, 2)}** ms')
-        embed.set_author(icon_url=ctx.me.avatar_url, name=ctx.me)
-        embed.set_footer(text=ctx.message.author, icon_url=ctx.message.author.avatar_url)
-        await resp.edit(embed=embed)
+async def ping(self, ctx):
+    """Returns the amount of latency from the host to the Discord WS/REST API"""
+    embed = discord.Embed(timestamp=ctx.message.created_at, color=0x666666)
+    embed.add_field(name="Pong Recieved!", value="Calculating...")
+    resp = await ctx.send(embed=embed)
+    embed = discord.Embed(timestamp=ctx.message.created_at, color=0x666666)
+    diff = resp.created_at - ctx.message.created_at
+    embed.add_field(name="Ping", value=f'**{1000*diff.total_seconds():.1f}** ms')
+    embed.add_field(name='WS', value=f'**{round(self.bot.latency*1000, 2)}** ms')
+    embed.set_author(icon_url=ctx.me.avatar_url, name=ctx.me)
+    embed.set_footer(text=ctx.message.author, icon_url=ctx.message.author.avatar_url)
+    await resp.edit(embed=embed)
+
+
+@commands.command()
+async def restart(self, ctx: commands.Context):
+    await ctx.send("Restarting...")
+    bot.logout
+    bot.start(config['Credentials']['Token'], bot=True)
 
 
 
 bot.run(config['Credentials']['Token'], bot=True)
+
 
 time.sleep(5)
