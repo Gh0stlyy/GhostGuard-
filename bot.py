@@ -10,6 +10,7 @@ import traceback
 from discord.ext import commands
 from pathlib import Path
 
+ctx = commands.Context
 
 if not os.path.exists('config'):
     os.makedirs('config')
@@ -33,6 +34,17 @@ def prefix_callable(bot, msg):
 # Preparing the bot
 bot = commands.AutoShardedBot(command_prefix=prefix_callable, case_insensitive=True, owner_id=189878809997213706,
                    description='The silent coast guard of Discord servers.')
+
+
+initial_extensions = ['basic']
+
+
+if __name__ == '__main__':
+    for extension in initial_extensions:
+        try:
+            bot.load_extension(f"cogs.{extension}")
+        except:
+            print(f"Failed to load extension {extension}.")
 
 
 @bot.event
@@ -59,40 +71,6 @@ async def on_message(message:discord.Message):
                 pass #closed DMs
         else:
             await bot.invoke(ctx)
-
-
-@commands.command(name='hello', aliases=['henlo', 'hey', 'hi'])
-async def hello(self, ctx: commands.Context, fren: discord.Member):
-    """Checks the bot is running"""
-    if fren is None:
-        await ctx.send(f"Hey {ctx.author.mention} fren!")
-    if fren == ctx.bot.user:
-        await ctx.send("Hey there fren! I'm working for you.")
-    if fren != ctx.author:
-        await ctx.send(f"{fren.mention}: hey there fren! :) {ctx.author.mention}")
-
-
-@commands.command()
-async def ping(self, ctx):
-    """Returns the amount of latency from the host to the Discord WS/REST API"""
-    embed = discord.Embed(timestamp=ctx.message.created_at, color=0x666666)
-    embed.add_field(name="Pong Recieved!", value="Calculating...")
-    resp = await ctx.send(embed=embed)
-    embed = discord.Embed(timestamp=ctx.message.created_at, color=0x666666)
-    diff = resp.created_at - ctx.message.created_at
-    embed.add_field(name="Ping", value=f'**{1000*diff.total_seconds():.1f}** ms')
-    embed.add_field(name='WS', value=f'**{round(self.bot.latency*1000, 2)}** ms')
-    embed.set_author(icon_url=ctx.me.avatar_url, name=ctx.me)
-    embed.set_footer(text=ctx.message.author, icon_url=ctx.message.author.avatar_url)
-    await resp.edit(embed=embed)
-
-
-@commands.command()
-async def restart(self, ctx: commands.Context):
-    await ctx.send("Restarting...")
-    bot.logout
-    bot.start(config['Credentials']['Token'], bot=True)
-
 
 
 bot.run(config['Credentials']['Token'], bot=True)
