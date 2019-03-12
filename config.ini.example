@@ -1,3 +1,6 @@
 [Credentials]
 ;Your bot token goes here:
-token = 
+token =
+[Settings]
+;BotLoggingChannel goes here:
+botlogger =

@@ -5,15 +5,16 @@ import datetime
 import traceback
 import logging
 from discord.ext import commands
+from utils import botlogging
 
-class basic:
+class basic(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
     @commands.command()
     async def hello(self, ctx):
         """Checks the bot is running"""
-        fren = discord.message.author.mentionx
+        fren = ctx.message.author.mention
         await ctx.send(f"{fren} Hey fren!")
 
     @commands.command()

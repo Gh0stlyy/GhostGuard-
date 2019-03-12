@@ -9,6 +9,7 @@ import os
 import traceback
 from discord.ext import commands
 from pathlib import Path
+from utils import botlogging
 
 ctx = commands.Context
 
@@ -49,7 +50,8 @@ if __name__ == '__main__':
 
 @bot.event
 async def on_guild_join(guild: discord.Guild):
-    bot.get_channel(544861813334867969)(f"A new guild came up: {guild.name} ({guild.id}).")
+    await BOT_LOG_CHANNEL.send(f"A new guild came up: {guild.name} ({guild.id}).")
+    await botlogging.info(f"A new guild came up: {guild.name} ({guild.id}).")
 
 
 @bot.event
