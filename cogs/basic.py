@@ -5,9 +5,8 @@ import datetime
 import traceback
 import logging
 from discord.ext import commands
-from utils import botlogging
 
-class basic(commands.Cog):
+class basic(commands.Cog, name='basic'):
     def __init__(self, bot):
         self.bot = bot
 
@@ -18,7 +17,7 @@ class basic(commands.Cog):
         await ctx.send(f"{fren} Hey fren!")
 
     @commands.command()
-    async def ping(self, ctx: commands.Context):
+    async def ping(self, ctx):
         """Returns the amount of latency from the host to the Discord WS/REST API"""
         embed = discord.Embed(timestamp=ctx.message.created_at, color=0x666666)
         embed.add_field(name="Pong Recieved!", value="Calculating...")

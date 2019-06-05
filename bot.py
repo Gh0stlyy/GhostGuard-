@@ -9,7 +9,6 @@ import os
 import traceback
 from discord.ext import commands
 from pathlib import Path
-from utils import botlogging
 
 ctx = commands.Context
 
@@ -34,7 +33,7 @@ def prefix_callable(bot, msg):
 
 # Preparing the bot
 bot = commands.AutoShardedBot(command_prefix=prefix_callable, case_insensitive=True, owner_id=189878809997213706,
-                   description='The silent coast guard of Discord servers.')
+                   description='The Ghost Defender Discord servers.')
 
 
 initial_extensions = ['basic']
@@ -47,17 +46,17 @@ if __name__ == '__main__':
         except:
             print(f"Failed to load extension {extension}.")
 
+log = bot.get_channel(585678391127179264)
 
 @bot.event
 async def on_guild_join(guild: discord.Guild):
-    await BOT_LOG_CHANNEL.send(f"A new guild came up: {guild.name} ({guild.id}).")
-    await botlogging.info(f"A new guild came up: {guild.name} ({guild.id}).")
+    await log.send(f"A new guild came up: {guild.name} ({guild.id}).")
 
 
 @bot.event
 async def on_ready():
     print(f'\n\nLogged in as: {bot.user.name} - {bot.user.id}' + f'\nVersion: {discord.__version__}\n')
-    await bot.change_presence(activity=discord.Activity(name='The Coastline.', type=discord.ActivityType.watching))
+    await bot.change_presence(activity=discord.Activity(status=discord.Status.online, name='The Skies.', type=discord.ActivityType.watching))
 
 
 @bot.event
